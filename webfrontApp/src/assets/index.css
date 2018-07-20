@@ -1,0 +1,19 @@
+.el-input .el-input__inner {
+    height: 29px;
+    border: 0;
+    padding: 0;
+    margin-left: 3px;
+    margin-right: 1px;
+    line-height: 30px;
+}
+.el-select .el-input--suffix .el-input__inner {
+    height: 29px;
+    border: 1px solid #ccc;
+    padding: 0;
+    margin-left: 3px;
+    margin-right: 1px;
+    line-height: 30px;
+}
+.el-input.is-disabled .el-input__inner {
+    background: none;
+}
