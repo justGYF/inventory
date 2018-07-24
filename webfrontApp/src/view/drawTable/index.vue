@@ -321,62 +321,62 @@
             // 保存清单
             saveIt () {
                 // 判断是否有未填项
-                // if (this.fileName === '') {
-                //     this.$alert('请填写文件名', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // }if (this.settlementStatus === false) {
-                //     this.$alert('请结算清单', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // }
-                // if (this.tableTitle === '') {
-                //     this.$alert('请填写公司名称', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // } else if (this.inputPhone === '') {
-                //     this.$alert('请填写电话', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // } else if (this.inputAdress === '') {
-                //     this.$alert('请填写地址', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // } else if (this.value === '') {
-                //     this.$alert('请选择入帐方式', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // }
-                // this.liName.forEach(item => {
-                //     if (item.inputs === '') {
-                //         this.$alert('请填写具体信息', {
-                //             confirmButtonText: '确定'
-                //         })
-                //     }
-                //     return
-                // })
-                // this.mainProject.forEach(item => {
-                //     if (item.inputs === '') {
-                //         this.$alert('请填写维修费用', {
-                //             confirmButtonText: '确定'
-                //         })
-                //     }
-                //     return
-                // })
-                // this.materialProject.forEach(item => {
-                //     if (item.inputCount === '' || item.inputNum === '') {
-                //         this.$alert('请填写数量或单价', {
-                //             confirmButtonText: '确定'
-                //         })
-                //     }
-                //     return
-                // })
+                if (this.fileName === '') {
+                    this.$alert('请填写文件名', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }if (this.settlementStatus === false) {
+                    this.$alert('请结算清单', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }
+                if (this.tableTitle === '') {
+                    this.$alert('请填写公司名称', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                } else if (this.inputPhone === '') {
+                    this.$alert('请填写电话', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                } else if (this.inputAdress === '') {
+                    this.$alert('请填写地址', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                } else if (this.value === '') {
+                    this.$alert('请选择入帐方式', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }
+                this.liName.forEach(item => {
+                    if (item.inputs === '') {
+                        this.$alert('请填写具体信息', {
+                            confirmButtonText: '确定'
+                        })
+                    }
+                    return
+                })
+                this.mainProject.forEach(item => {
+                    if (item.inputs === '') {
+                        this.$alert('请填写维修费用', {
+                            confirmButtonText: '确定'
+                        })
+                    }
+                    return
+                })
+                this.materialProject.forEach(item => {
+                    if (item.inputCount === '' || item.inputNum === '') {
+                        this.$alert('请填写数量或单价', {
+                            confirmButtonText: '确定'
+                        })
+                    }
+                    return
+                })
                 this.fileShow = true;
                 this.informationSave()
             },

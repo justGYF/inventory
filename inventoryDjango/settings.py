@@ -80,7 +80,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': 'test',
+        'NAME': 'carexport',
         'USER': 'root',
         'HOST': 'localhost',
         'PORT': '3306',

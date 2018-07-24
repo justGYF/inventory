@@ -268,6 +268,8 @@
                     { value: '4', label: '微信' },
                     { value: '5', label: '现金' }
                 ],
+                // 保存原数据
+                oldData: {}
             }
         },
         watch: {
@@ -299,6 +301,7 @@
                         ids: this.$route.params.ids
                     }
                 }).then(e => {
+                    this.oldData = e.data
                     let data = e.data
                     this.liName.forEach(item => {
                         item.inputs = data[item.key];
@@ -478,7 +481,21 @@
             // 取消编辑功能
             cancleEdit () {
                 // 先将数据还原
-                //
+                let data = this.oldData
+                this.liName.forEach(item => {
+                    item.inputs = data[item.key];
+                })
+                this.fileName = data.fileName
+                this.tableTitle = data.tableTitle
+                this.maintenanceFees = data.maintenanceFees
+                this.materialFees = data.materialFees
+                this.allMoneyChina = data.allMoneyChina
+                this.allMoney = data.allMoney
+                this.telePhone = data.telePhone
+                this.local = data.local
+                this.values = data.payment
+                this.mainProject = JSON.parse(data.mainProject)
+                this.materialProject = JSON.parse(data.materialProject)
                 this.read = true;
             },
             // 维修项目列表显示
