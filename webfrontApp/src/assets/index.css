@@ -17,3 +17,25 @@
 .el-input.is-disabled .el-input__inner {
     background: none;
 }
+
+/* 登陆页面的表格样式*/
+.login .el-input {
+    border-bottom: 1px solid #ccc;
+}
+.login .el-form-item__label {
+    line-height: 30px;
+    letter-spacing: 5px;
+    font-size: 20px;
+    color: #D6D1D1;
+}
+.login .el-form-item__content {
+    line-height: 30px;
+    font-size: 20px;
+    color: #D6D1D1;
+}
+.login .el-input__inner {
+    letter-spacing: 5px;
+    background: none;
+    font-size: 20px;
+    color: #D6D1D1;
+}

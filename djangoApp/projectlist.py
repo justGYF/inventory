@@ -5,7 +5,7 @@ from django.core import serializers
 import json
 
 from djangoApp.models import MainProject
-
+    
 # 维修/材料的条目
 def projectlist(request):
     mainL = []

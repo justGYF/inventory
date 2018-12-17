@@ -1,0 +1,86 @@
+<template>
+    <div class="login">
+        <h1>户县永光汽车修理部</h1>
+        <h2>结算系统</h2>
+        <el-form label-position="left" label-width="105px" :model="formLabelAlign">
+            <el-form-item label="用户名:">
+                <el-input v-model="formLabelAlign.userName"></el-input>
+            </el-form-item>
+            <el-form-item label="密码:">
+                <el-input v-model="formLabelAlign.passWord" type="password"></el-input>
+            </el-form-item>
+            <p class="loginBtn" @click="login">登陆</p> 
+        </el-form>
+    </div>
+</template>
+
+<script>
+    export default {
+        data () {
+            return {
+                formLabelAlign: {
+                    userName: '',
+                    passWord: ''
+                }
+            }
+        },
+        methods: {
+            login () {
+                if (this.formLabelAlign.userName === '') {
+                    this.$alert('请输入用户名')
+                    return
+                } else if (this.formLabelAlign.passWord === '') {
+                    this.$alert('请输入密码')
+                    return;
+                }
+                this.$ajax({
+                    method: 'post',
+                    url: `${this.$globalUrl}/api/login`,
+                    data: {
+                        userName: this.formLabelAlign.userName,
+                        passWord: this.formLabelAlign.passWord,
+                    }
+                }).then(e => {
+                    if (e.data.type === 'error') {
+                        this.$alert(e.data.message)
+                    } else {
+                        this.$router.push({path: '/hello', name: 'Hello'})
+                    }
+                })
+            }
+        }
+    }
+</script>
+
+<style>
+    .login {
+        width: 400px;
+        height: 500px;
+        text-align: center;
+        margin: 100px auto;
+        /*color: #0D5562;*/
+        color: #D6D1D1;
+        letter-spacing: 5px;
+        padding: 30px 30px;
+        position: relative;
+    }
+    .login .el-form {
+        margin-top: 50px;
+    }
+    .login .loginBtn {
+        width: 200px;
+        height: 40px;
+        font-size: 20px;
+        line-height: 40px;
+        background: #D6D1D1;
+        margin: 50px auto;
+        text-align: center;
+        color: #AE81FF;
+        cursor: pointer;
+        border-radius: 3px;
+    }
+    .login .loginBtn:hover {
+        background: #AE81FF;
+        color: #D6D1D1;
+    }
+</style>

@@ -45,3 +45,9 @@ class MainProject(models.Model):
     mainList = models.CharField(max_length = 60)
     materialList = models.CharField(max_length = 60)
     unt = models.CharField(max_length = 10)
+
+
+# 登陆账号表
+class Account(models.Model):
+    userName = models.CharField(max_length = 60)
+    password = models.CharField(max_length = 60)

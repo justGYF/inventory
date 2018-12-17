@@ -1,6 +1,6 @@
 from django.conf.urls import url
  
-from . import operatetable,projectlist
+from . import operatetable,projectlist,login
 
 urlpatterns = [
     url(r'^updateNum$', operatetable.updateNum),
@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^deleteNum$', operatetable.deleteNum),
     url(r'^searchNum$', operatetable.searchNum),
     url(r'^showFileList$', operatetable.showFileList),
-    url(r'^projectlist$', projectlist.projectlist)
+    url(r'^projectlist$', projectlist.projectlist),
+    url(r'^login$', login.login)
 ]

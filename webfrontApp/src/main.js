@@ -7,7 +7,10 @@ import ElemetUi from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/index.css'
 import axios from 'axios'
+import particles from 'particles.js'
 
+
+Vue.use(particles)
 Vue.config.productionTip = false
 Vue.prototype.$ajax = axios
 
