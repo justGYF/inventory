@@ -21,7 +21,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /*text-align: center;*/
-  color: #2c3e50;
+  /*color: #2c3e50;*/
   /*margin-top: 60px;*/
   width:100%;
   /*padding-bottom: 10px;*/
@@ -33,7 +33,7 @@ html, body {
   padding: 0;
 }
 #particles{
-      position: absolute;
+      position: fixed;
       top: 0;
       z-index: -1;
       width: 100%;

@@ -34,9 +34,14 @@
                         </ul>
                         <ul class="middleContent ulcss">
                             <li v-for="(item, index) in mainProject">
-                                <p>{{index+1}}</p>
-                                <p>{{item.mainList}}
-                                </p><p>
+                                <p>
+                                    {{index+1}}
+                                    <i class="el-icon-error" @click="delLiM(index)"></i>
+                                </p>
+                                <p>
+                                    <el-input v-model="item.mainList"></el-input>
+                                </p>
+                                <p>
                                     <el-input v-model="item.inputs"></el-input>
                                 </p>
                             </li>
@@ -68,12 +73,19 @@
                         </ul>
                         <ul class="bottomContent ulcss">
                             <li v-for="(item, index) in materialProject">
-                                <p>{{index+1}}</p>
-                                <p>{{item.materialList}}</p>
+                                <p class="ulcssIndex"> 
+                                    {{index+1}}
+                                    <i class="el-icon-error" @click="delLi(index)"></i>
+                                </p>
+                                <p>
+                                    <el-input v-model="item.materialList"></el-input>
+                                </p>
                                 <p>
                                     <el-input v-model="item.inputCount"></el-input>
                                 </p>
-                                <p>{{item.unt}}</p>
+                                <p>
+                                    <el-input v-model="item.unt"></el-input>
+                                </p>
                                 <p>
                                     <el-input v-model="item.inputNum"></el-input>
                                 </p>
@@ -135,8 +147,7 @@
                 <el-button @click="mainDialog" style="margin: 150px 70px 50px 30px;">维修项目</el-button>
                 <el-button @click="materialDialog" style="margin: 50px 70px 50px 30px;">材料项目</el-button>
                 <el-button @click="saveIt" type="primary" style="margin: 50px 70px 20px 30px;">保存清单</el-button>
-                <p style="border-bottom: 1px solid #ccc; width: 90%;" v-show="fileShow">
-                    <el-input v-model="fileName" placeholder="请输入文件名"></el-input>
+                <p style="border-bottom: 1px solid #ccc; width: 90%;" v-show="fileShow" v-text="'文件名：'+fileName">
                 </p>
             </el-col>
         </el-row>
@@ -171,6 +182,7 @@
 <script>
     import sysdialog from '@/components/dialog/sysdialog.vue'
     import { convertCurrency, thousandBitSeparator } from '@/utils/index.js'
+    import _ from 'lodash'
     export default {
         data () {
             return {
@@ -318,65 +330,82 @@
                     }
                 })
             },
+            // 当前日期的字符串--用于文件名
+            getDate () {
+                var year = new Date().getFullYear(); 
+                var month =(new Date().getMonth() + 1); 
+                var day = (new Date().getDate());
+                return `${year}${month}${day}`
+            },
             // 保存清单
             saveIt () {
                 // 判断是否有未填项
-                if (this.fileName === '') {
-                    this.$alert('请填写文件名', {
-                        confirmButtonText: '确定'
-                    })
-                    return
-                }if (this.settlementStatus === false) {
-                    this.$alert('请结算清单', {
-                        confirmButtonText: '确定'
-                    })
-                    return
-                }
-                if (this.tableTitle === '') {
-                    this.$alert('请填写公司名称', {
-                        confirmButtonText: '确定'
-                    })
-                    return
-                } else if (this.inputPhone === '') {
-                    this.$alert('请填写电话', {
-                        confirmButtonText: '确定'
-                    })
-                    return
-                } else if (this.inputAdress === '') {
-                    this.$alert('请填写地址', {
-                        confirmButtonText: '确定'
-                    })
-                    return
-                } else if (this.value === '') {
-                    this.$alert('请选择入帐方式', {
-                        confirmButtonText: '确定'
-                    })
-                    return
-                }
+                // if (this.fileName === '') {
+                //     this.$alert('请填写文件名', {
+                //         confirmButtonText: '确定'
+                //     })
+                //     return
+                // }
+                // if (this.settlementStatus === false) {
+                //     this.$alert('请结算清单', {
+                //         confirmButtonText: '确定'
+                //     })
+                //     return
+                // }
+                // if (this.tableTitle === '') {
+                //     this.$alert('请填写公司名称', {
+                //         confirmButtonText: '确定'
+                //     })
+                //     return
+                // } else if (this.inputPhone === '') {
+                //     this.$alert('请填写电话', {
+                //         confirmButtonText: '确定'
+                //     })
+                //     return
+                // } else if (this.inputAdress === '') {
+                //     this.$alert('请填写地址', {
+                //         confirmButtonText: '确定'
+                //     })
+                //     return
+                // } else if (this.value === '') {
+                //     this.$alert('请选择入帐方式', {
+                //         confirmButtonText: '确定'
+                //     })
+                //     return
+                // }
+                // this.liName.forEach(item => {
+                //     if (item.inputs === '') {
+                //         this.$alert('请填写具体信息', {
+                //             confirmButtonText: '确定'
+                //         })
+                //     }
+                //     return
+                // })
+                // this.mainProject.forEach(item => {
+                //     if (item.inputs === '') {
+                //         this.$alert('请填写维修费用', {
+                //             confirmButtonText: '确定'
+                //         })
+                //     }
+                //     return
+                // })
+                // this.materialProject.forEach(item => {
+                //     if (item.inputCount === '' || item.inputNum === '') {
+                //         this.$alert('请填写数量或单价', {
+                //             confirmButtonText: '确定'
+                //         })
+                //     }
+                //     return
+                // })
+                // 生成并保存文件名
+                let carOwner, carModel;
                 this.liName.forEach(item => {
-                    if (item.inputs === '') {
-                        this.$alert('请填写具体信息', {
-                            confirmButtonText: '确定'
-                        })
-                    }
-                    return
+                    if (item.key === 'carOwner')
+                        carOwner = item.inputs
+                    if (item.key === 'carModel')
+                        carModel = item.inputs
                 })
-                this.mainProject.forEach(item => {
-                    if (item.inputs === '') {
-                        this.$alert('请填写维修费用', {
-                            confirmButtonText: '确定'
-                        })
-                    }
-                    return
-                })
-                this.materialProject.forEach(item => {
-                    if (item.inputCount === '' || item.inputNum === '') {
-                        this.$alert('请填写数量或单价', {
-                            confirmButtonText: '确定'
-                        })
-                    }
-                    return
-                })
+                this.fileName = `${carModel}-${carOwner}-${this.getDate()}`
                 this.fileShow = true;
                 this.informationSave()
             },
@@ -428,14 +457,14 @@
                 this.checkAll = false;
                 this.isIndeterminate = true;
             },
-            // 维修项目列表显示
+            // 维修项目列表显示--采用深拷贝
             mainDialog () {
                 this.dialogTitle = '维修项目'
                 this.showDialog = true;
                 this.checkNum = [];
                 this.allNum = [];
                 this.dialogButsType = 1;
-                this.allNum = this.opt.mainProjectArr;
+                this.allNum = _.cloneDeep(this.opt.mainProjectArr);
             },
             // 材料项目列表显示
             materialDialog () {
@@ -444,7 +473,14 @@
                 this.checkNum = [];
                 this.allNum = [];
                 this.dialogButsType = 2;
-                this.allNum = this.opt.materialProjectArr;
+                this.allNum = _.cloneDeep(this.opt.materialProjectArr);
+            },
+            // 删除某条项目
+            delLi (indexs) {
+                this.materialProject.splice(indexs, 1)
+            },
+            delLiM (indexs) {
+                this.mainProject.splice(indexs, 1)
             }
          },
         components: {
@@ -502,7 +538,7 @@
     }
     /**
      * css博大精深，天下无敌，学不来啊
-     * flaot + BFC 两列布局
+     * float + BFC 两列布局
      * 再次感慨css博大精深
      */
     .middleFoot {

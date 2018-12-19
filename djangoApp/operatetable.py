@@ -47,7 +47,6 @@ def insertNum(request):
     if request.method == 'POST':
         req = json.loads(request.body)
         for i in listFile:
-            print(i)
             if req['fileName'] == i['fileName']:
                 return HttpResponse(json.dumps(err), content_type="application/json")
         for keys in req:
@@ -67,6 +66,8 @@ def deleteNum(request):
         Introduce.objects.filter(id = req).delete()
     return HttpResponse('newDict')
 
+
+# 依据所传ids查询单一文件
 def searchNum(request):
     #查 --- 查数据并封装 -- 格式暂定
     if request.method == 'GET':
@@ -76,10 +77,26 @@ def searchNum(request):
         return HttpResponse(json.dumps(res[0]['fields']), content_type="application/json")
         return HttpResponse('ok')
 
-# 查询文件名列表
+# 查询文件名列表(所有文件)
 def showFileList(request):
     listFile = Introduce.objects.all().values('fileName', 'id')
     listF = []
     for item in listFile:
         listF.append(item)
     return HttpResponse(json.dumps(listF), content_type="application/json")
+
+
+# 依据前端所传参数查询某些文件
+def showSomeFile(request):
+    if request.method == 'POST':
+        req = json.loads(request.body)
+        keyword = req['searchData']
+        someFile = Introduce.objects.filter(fileName__icontains = keyword)
+        listF = []
+        dicts = {'fileName': '', 'id': ''}
+        for key in someFile:
+            dicts['fileName'] = key.fileName
+            dicts['id'] = key.id
+            listF.append(dicts)
+            dicts = {'fileName': '', 'id': ''}
+        return HttpResponse(json.dumps(listF), content_type="application/json")

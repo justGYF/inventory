@@ -9,7 +9,7 @@
             <el-form-item label="密码:">
                 <el-input v-model="formLabelAlign.passWord" type="password"></el-input>
             </el-form-item>
-            <p class="loginBtn" @click="login">登陆</p> 
+            <p class="loginBtn" @click="login" ref="enterBtn">登陆</p> 
         </el-form>
     </div>
 </template>
@@ -24,13 +24,30 @@
                 }
             }
         },
+        mounted () {
+            document.addEventListener('keyup', (e) => {
+                if (this.$refs.enterBtn && e.keyCode === 13) {
+                    this.login();
+                }
+            }, false)
+        },
         methods: {
             login () {
                 if (this.formLabelAlign.userName === '') {
-                    this.$alert('请输入用户名')
+                    this.$message({
+                        showClose: true,
+                        message: '请输入用户名',
+                        type: 'warning',
+                        duration: 1000
+                    });
                     return
                 } else if (this.formLabelAlign.passWord === '') {
-                    this.$alert('请输入密码')
+                    this.$message({
+                        showClose: true,
+                        message: '请输入密码',
+                        type: 'warning',
+                        duration: 1000
+                    });
                     return;
                 }
                 this.$ajax({
@@ -42,7 +59,12 @@
                     }
                 }).then(e => {
                     if (e.data.type === 'error') {
-                        this.$alert(e.data.message)
+                        this.$message({
+                            showClose: true,
+                            message: e.data.message,
+                            type: 'warning',
+                            duration: 1000
+                        });
                     } else {
                         this.$router.push({path: '/hello', name: 'Hello'})
                     }
