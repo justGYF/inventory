@@ -34,7 +34,7 @@ def updateNum(request):
             # 保存更新
             temp.save()
         else:
-            return HttpResponse('error')
+            return HttpResponse({'type': 'error'})
     return HttpResponse(json.dumps({'type': 'success'}), content_type="application/json")
 
 def insertNum(request):
@@ -74,8 +74,10 @@ def searchNum(request):
         req = request.GET.get('ids')
         # 这种取值方法肯定不科学，暂时还未找到更合理的方式
         res = json.loads(serializers.serialize('json', Introduce.objects.filter(id = req)))
-        return HttpResponse(json.dumps(res[0]['fields']), content_type="application/json")
-        return HttpResponse('ok')
+        if not res:
+            return HttpResponse(json.dumps({'type': 'error', 'message': '请返回上一级,重新打开此文件'}), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps(res[0]['fields']), content_type="application/json")
 
 # 查询文件名列表(所有文件)
 def showFileList(request):

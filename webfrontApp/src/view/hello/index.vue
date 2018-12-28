@@ -1,30 +1,38 @@
 <template>
     <div class="hello">
-        <div class="title">
-            <p>永光汽车修理部</p>
-            <p>结算系统</p>
-        </div>
-        <div>
-            <div class="buts">
-                <p @click="showCount" :class="pStyle">显示全部清单</p>
-                <p @click="searchCount" :class="sStyle">搜索清单</p>
-                <p @click="newCount" class="butsP">新建清单</p>
-            </div>
-            <div class="leftCon">
-                <div class="search" v-show="showSearch">
-                    <el-input placeholder="可依据 车型/车主/日期/完整文件名 查询" v-model="searchData" class="input-with-select">
-                        <el-button slot="append" icon="el-icon-search" @click="searchIt"></el-button>
-                    </el-input>
+        <el-row :gutter="24" style="margin: 0;">
+            <el-col :span="5" :offset="2">
+                <div class="title">
+                    <p>永光汽车修理部</p>
+                    <p>结算系统</p>
                 </div>
-                <ul>
-                    <li v-for="(item, index) in listName"
-                        @click="printCount(index)"
-                        v-if="showList">
-                        {{item.fileName}}
-                    </li>
-                </ul>    
-            </div>
-        </div>
+            </el-col>
+        </el-row>
+        <el-row :gutter="24" style="margin: 0;">
+            <el-col :span="6" :offset="2">
+                <div class="buts">
+                    <p @click="showCount" :class="pStyle">显示全部清单</p>
+                    <p @click="searchCount" :class="sStyle">搜索清单</p>
+                    <p @click="newCount" class="butsP">新建清单</p>
+                </div>
+            </el-col>
+            <el-col :span="10" :offset="0">
+                <div class="leftCon">
+                    <div class="search" v-show="showSearch">
+                        <el-input placeholder="可依据 车型/车主/日期/完整文件名 查询" v-model="searchData" class="input-with-select">
+                            <el-button slot="append" icon="el-icon-search" @click="searchIt"></el-button>
+                        </el-input>
+                    </div>
+                    <ul>
+                        <li v-for="(item, index) in listName"
+                            @click="printCount(index)"
+                            v-if="showList">
+                            {{item.fileName}}
+                        </li>
+                    </ul>    
+                </div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -84,6 +92,14 @@
                     this.showList = true
                     this.listName = []
                     this.listName = e.data
+                    if (e.data.length === 0) {
+                        this.$message({
+                            showClose: true,
+                            message: `没有找到相关文件`,
+                            type: 'warning',
+                            duration: 1000
+                        })
+                    }
                 })
             },
             // 显示某文件

@@ -1,7 +1,33 @@
 <template>
-    <div class="drawTabel">
+    <div class="printTable">
         <el-row :gutter="20">
-            <el-col :span="19">
+            <el-col :span="5" :offset="2">
+                <div class="title">
+                    <p>永光汽车修理部</p>
+                    <p>结算系统</p>
+                </div>    
+            </el-col>
+            <el-col :span="11" :offset='6'>
+                <div class="btnBox">
+                    <el-button @click="openEdit" type="primary"
+                    style="margin-left: 350px;"
+                    v-show="read">
+                        &nbsp;&nbsp;编辑&nbsp;&nbsp;
+                    </el-button>
+                    <el-button @click="cancleEdit"
+                        v-show="!read">
+                        取消编辑
+                    </el-button>
+                    <el-button @click="mainDialog" v-show="!read">维修项目</el-button>
+                    <el-button @click="materialDialog" v-show="!read">材料项目</el-button>
+                    <el-button @click="saveIt" type="primary" v-show="!read">
+                        保存清单
+                    </el-button>
+                </div>
+            </el-col> 
+        </el-row>
+        <el-row :gutter="24">
+            <el-col :span="20" :offset="2">
                 <el-row>
                     <p class="titleContent">
                         <el-input placeholder="请输入公司名称"
@@ -26,7 +52,10 @@
                         <ul class="middleHead ulcss">
                             <li>
                                 <p>序号</p>
-                                <p>维修项目</p>
+                                <p>
+                                    维修项目
+                                    <i class="el-icon-circle-plus" @click="addMainProject" v-show="!read"></i>
+                                </p>
                                 <p>修理费</p>
                             </li>
                             <li>
@@ -37,10 +66,16 @@
                         </ul>
                         <ul class="middleContent ulcss">
                             <li v-for="(item, index) in mainProject">
-                                <p>{{index+1}}</p>
-                                <p>{{item.mainList}}
-                                </p><p>
-                                    <el-input v-model="item.inputs" :disabled="read"></el-input>
+                                <p>
+                                    {{index+1}}
+                                    <i class="el-icon-error" @click="delLiM(index)"
+                                    v-show="!read"></i>
+                                </p>
+                                <p>
+                                    <el-input v-model="item.mainList"></el-input>
+                                </p>
+                                <p>
+                                    <el-input v-model="item.inputs"></el-input>
                                 </p>
                             </li>
                         </ul>
@@ -54,7 +89,11 @@
                         <ul class="bottomHead ulcss">
                             <li>
                                 <p>序号</p>
-                                <p>材料项目</p>
+                                <p>
+                                    材料项目
+                                    <i class="el-icon-circle-plus"
+                                    @click="addMaterialProject" v-show="!read"></i>
+                                </p>
                                 <p>数量</p>
                                 <p>单位</p>
                                 <p>单价</p>
@@ -71,16 +110,23 @@
                         </ul>
                         <ul class="bottomContent ulcss">
                             <li v-for="(item, index) in materialProject">
-                                <p>{{index+1}}</p>
-                                <p>{{item.materialList}}</p>
-                                <p>
-                                    <el-input v-model="item.inputCount" :disabled="read"></el-input>
+                                <p class="ulcssIndex"> 
+                                    {{index+1}}
+                                    <i class="el-icon-error" @click="delLi(index)"
+                                    v-show="!read"></i>
                                 </p>
-                                <p>{{item.unt}}</p>
                                 <p>
-                                    <el-input v-model="item.inputNum" :disabled="read"></el-input>
+                                    <el-input v-model="item.materialList"></el-input>
                                 </p>
-                                <p>{{item.money}}</p>
+                                <p>
+                                    <el-input v-model="item.inputCount"></el-input>
+                                </p>
+                                <p>
+                                    <el-input v-model="item.unt"></el-input>
+                                </p>
+                                <p>
+                                    <el-input v-model="item.inputNum"></el-input>
+                                </p>
                             </li>
                         </ul>
                         <div class="middleFoot">
@@ -124,7 +170,7 @@
                                 <li>
                                     <p>电话：</p>
                                     <p><el-input v-model="telePhone" :disabled="read"></el-input></p>
-<!--                                     <p>传真：</p>
+                                    <!-- <p>传真：</p>
                                     <p><el-input v-model="inputFax"></el-input></p> -->
                                     <p>地址：</p>
                                     <p><el-input v-model="local" :disabled="read"></el-input></p>
@@ -133,28 +179,13 @@
                         </el-col>
                     </div>
                 </el-row>
-            </el-col>
-            <el-col :span="3" :offset='1'>
-                <el-button @click="openEdit" type="primary"
-                    style="margin: 150px 70px 50px 30px;"
-                    v-show="read">
-                    编辑
-                </el-button>
-                <el-button @click="cancleEdit"
-                    style="margin: 150px 70px 20px 30px;"
-                    v-show="!read">
-                    取消编辑
-                </el-button>
-                <el-button @click="mainDialog" style="margin: 20px 70px 20px 30px;" v-show="!read">维修项目</el-button>
-                <el-button @click="materialDialog" style="margin: 20px 70px 20px 30px;" v-show="!read">材料项目</el-button>
-                <el-button @click="saveIt" type="primary"
-                    style="margin: 20px 70px 20px 30px;"
-                    v-show="!read">
-                    保存清单
-                </el-button>
-                <p style="border-bottom: 1px solid #ccc; width: 90%;" v-show="!read">
-                    <el-input v-model="fileName" placeholder="请输入文件名" :disabled="read"></el-input>
-                </p>
+                <el-row>
+                    <el-col :span="5" :offset="17">
+                        <p style="border-bottom: 1px solid #ccc; margin: 0 0 50px 0; width: 200px;"
+                            v-show="!read" v-text="'文件名：'+fileName">
+                        </p>
+                    </el-col>
+                </el-row>
             </el-col>
         </el-row>
         <sysdialog
@@ -188,6 +219,7 @@
 <script>
     import sysdialog from '@/components/dialog/sysdialog.vue'
     import { convertCurrency } from '@/utils/index.js'
+    import _ from 'lodash'
     export default {
         data () {
             return {
@@ -241,11 +273,11 @@
                 // 总计
                 allMoney: '-----',
                 // 电话
-                telePhone: '-----',
+                telePhone: '',
                 // 传真
-                fax: '-----',
+                fax: '',
                 // 地址
-                local: '-----',
+                local: '',
                 // 维修项目
                 mainProject: [
                     // { name: '拆装----', inputs: '' }
@@ -300,24 +332,37 @@
                     params: {
                         ids: this.$route.params.ids
                     }
-                }).then(e => {
-                    this.oldData = e.data
-                    let data = e.data
-                    this.liName.forEach(item => {
-                        item.inputs = data[item.key];
-                    })
-                    this.fileName = data.fileName
-                    this.tableTitle = data.tableTitle
-                    this.maintenanceFees = data.maintenanceFees
-                    this.materialFees = data.materialFees
-                    this.allMoneyChina = data.allMoneyChina
-                    this.allMoney = data.allMoney
-                    this.telePhone = data.telePhone
-                    this.local = data.local
-                    this.values = data.payment
-                    this.mainProject = JSON.parse(data.mainProject)
-                    this.materialProject = JSON.parse(data.materialProject)
                 })
+                    .then(e => {
+                        if (e.data.type === 'error') {
+                            this.$message({
+                                showClose: true,
+                                message: e.data.message,
+                                type: 'warning',
+                                duration: 2000
+                            })
+                        } else {
+                            this.oldData = e.data
+                            let data = e.data
+                            this.liName.forEach(item => {
+                                item.inputs = data[item.key];
+                            })
+                            this.fileName = data.fileName
+                            this.tableTitle = data.tableTitle
+                            this.maintenanceFees = data.maintenanceFees
+                            this.materialFees = data.materialFees
+                            this.allMoneyChina = data.allMoneyChina
+                            this.allMoney = data.allMoney
+                            this.telePhone = data.telePhone
+                            this.local = data.local
+                            this.values = data.payment
+                            this.mainProject = JSON.parse(data.mainProject)
+                            this.materialProject = JSON.parse(data.materialProject)
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
             },
             // 结算
             settlement () {
@@ -334,6 +379,13 @@
                 this.allMoney = this.maintenanceFees + this.materialFees;
                 this.allMoneyChina = convertCurrency(this.allMoney);
                 this.settlementStatus = true;
+            },
+            // 当前日期的字符串--用于文件名
+            getDate () {
+                let year = new Date().getFullYear(); 
+                let month =(new Date().getMonth() + 1); 
+                let day = (new Date().getDate());
+                return `${year}${month}${day}`
             },
             // axios for information
             informationSave () {
@@ -358,7 +410,17 @@
                     }
                 }).then(e => {
                     if (e.data.type === 'success') {
-                        this.$alert('文件保存成功')
+                        this.$message({
+                            message: `文件保存成功`,
+                            type: 'success',
+                            duration: 1000
+                        })
+                        setTimeout(() => {
+                            this.$router.push({
+                                name: 'Hello',
+                                path: '/hello'
+                            })
+                        }, 1000)
                     } else {
                         this.$alert('非已有文件，请打开已有文件进行修改')
                     }
@@ -367,13 +429,14 @@
             // 保存清单
             saveIt () {
                 // 判断是否有未填项
-                if (this.fileName === '') {
-                    this.$alert('请填写文件名', {
-                        confirmButtonText: '确定'
-                    })
-                    return
-                }if (this.settlementStatus === false) {
-                    this.$alert('请结算清单', {
+                let tag1 = 0, tag2 = 0, tag3 = 0;
+                this.liName.forEach(item => {
+                    if (item.inputs === '') {
+                        tag1 = 1;
+                    }
+                })
+                if (tag1 !== 0) {
+                    this.$alert('请填写具体信息', {
                         confirmButtonText: '确定'
                     })
                     return
@@ -383,47 +446,56 @@
                         confirmButtonText: '确定'
                     })
                     return
-                } else if (this.inputPhone === '') {
+                } else if (this.telePhone === '') {
                     this.$alert('请填写电话', {
                         confirmButtonText: '确定'
                     })
                     return
-                } else if (this.inputAdress === '') {
+                } else if (this.local === '') {
                     this.$alert('请填写地址', {
                         confirmButtonText: '确定'
                     })
                     return
-                } else if (this.value === '') {
-                    this.$alert('请选择入帐方式', {
+                }
+                this.mainProject.forEach(item => {
+                    if (item.inputs === '') {
+                        tag2 = 1;
+                    }
+                    return
+                })
+                if (tag2 !== 0) {
+                    this.$alert('请填写维修费用', {
                         confirmButtonText: '确定'
                     })
                     return
                 }
-                this.liName.forEach(item => {
-                    if (item.inputs === '') {
-                        this.$alert('请填写具体信息', {
-                            confirmButtonText: '确定'
-                        })
-                    }
-                    return
-                })
-                this.mainProject.forEach(item => {
-                    if (item.inputs === '') {
-                        this.$alert('请填写维修费用', {
-                            confirmButtonText: '确定'
-                        })
-                    }
-                    return
-                })
                 this.materialProject.forEach(item => {
                     if (item.inputCount === '' || item.inputNum === '') {
-                        this.$alert('请填写数量或单价', {
-                            confirmButtonText: '确定'
-                        })
+                        tag3 = 1;
                     }
-                    return
                 })
+                if (tag3 !== 0) {
+                    this.$alert('请填写数量或单价', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }
+                if (this.settlementStatus === false) {
+                    this.$alert('请结算清单', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }
                 this.fileShow = true;
+                // 生成并保存文件名
+                let carOwner, carModel;
+                this.liName.forEach(item => {
+                    if (item.key === 'carOwner')
+                        carOwner = item.inputs
+                    if (item.key === 'carModel')
+                        carModel = item.inputs
+                })
+                this.fileName = `${carModel}-${carOwner}-${this.getDate()}`
                 this.informationSave()
             },
             // 获取多选框数据
@@ -505,7 +577,7 @@
                 this.checkNum = [];
                 this.allNum = [];
                 this.dialogButsType = 1;
-                this.allNum = this.opt.mainProjectArr;
+                this.allNum = _.cloneDeep(this.opt.mainProjectArr);
             },
             // 材料项目列表显示
             materialDialog () {
@@ -514,7 +586,21 @@
                 this.checkNum = [];
                 this.allNum = [];
                 this.dialogButsType = 2;
-                this.allNum = this.opt.materialProjectArr;
+                this.allNum = _.cloneDeep(this.opt.materialProjectArr);
+            },
+            // 删除某条项目
+            delLi (indexs) {
+                this.materialProject.splice(indexs, 1)
+            },
+            delLiM (indexs) {
+                this.mainProject.splice(indexs, 1)
+            },
+            // 手动添加某条项目
+            addMainProject () {
+                this.mainProject.push({ name: '', inputs: '' })
+            },
+            addMaterialProject () {
+                this.materialProject.push({ name: '', inputCount: '', unt: '', inputNum : '', money: ''})
             }
          },
         components: {
@@ -538,6 +624,27 @@
     }
     h2 {
         text-align: center;
+    }
+    .printTable .title {
+        width: 400px;
+        height: 120px;
+        margin-top: 20px;
+    }
+    .btnBox {
+        width: auto;
+        height: 40px;
+        margin-top: 45px;
+    }
+    .title p {
+        margin: 0 0 0 20px;
+        font-size: 30px;
+        width: 250px;
+        text-align: right;
+        line-height: 58px;
+        color: #D6D1D1;
+    }
+    .title p:last-child {
+        font-size: 25px;
     }
     .titleContent {
         width: 300px;
@@ -582,7 +689,8 @@
         line-height: 30px;
         border-right: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
-        color: #399CFC;
+        /*color: #399CFC;*/
+        color: #fff;
     }
     .tableHeadUl li {
         float: left;

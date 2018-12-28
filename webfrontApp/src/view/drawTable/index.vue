@@ -1,156 +1,176 @@
 <template>
-    <div class="drawTabel">
-        <el-row :gutter="20">
-            <el-col :span="19">
-                <el-row>
-                    <p class="titleContent">
-                        <el-input placeholder="请输入公司名称" v-model="tableTitle"></el-input>
-                    </p>
-                    <h2>结算单</h2>
-                    <div class="tableHead">
-                        <ul class="tableHeadUl ulcss">
-                            <li v-for="item in liName">
-                                <p>{{item.name}}</p>
-                                <p>
-                                    <el-input v-model="item.inputs"></el-input>
-                                </p>
-                            </li>
-                        </ul>
-                    </div>
-                </el-row>
-                <el-row>
-                    <div class="tableMiddle">
-                        <ul class="middleHead ulcss">
-                            <li>
-                                <p>序号</p>
-                                <p>维修项目</p>
-                                <p>修理费</p>
-                            </li>
-                            <li>
-                                <p>序号</p>
-                                <p>维修项目</p>
-                                <p>修理费</p>
-                            </li>
-                        </ul>
-                        <ul class="middleContent ulcss">
-                            <li v-for="(item, index) in mainProject">
-                                <p>
-                                    {{index+1}}
-                                    <i class="el-icon-error" @click="delLiM(index)"></i>
-                                </p>
-                                <p>
-                                    <el-input v-model="item.mainList"></el-input>
-                                </p>
-                                <p>
-                                    <el-input v-model="item.inputs"></el-input>
-                                </p>
-                            </li>
-                        </ul>
-                        <div class="middleFoot">
-                            <span style="padding-right: 300px;">维修费小计： {{maintenanceFees}}</span>
-                        </div>
-                    </div>
-                </el-row>
-                <el-row>
-                    <div class="tableBottom">
-                        <ul class="bottomHead ulcss">
-                            <li>
-                                <p>序号</p>
-                                <p>材料项目</p>
-                                <p>数量</p>
-                                <p>单位</p>
-                                <p>单价</p>
-                                <p>金额</p>
-                            </li>
-                            <li>
-                                <p>序号</p>
-                                <p>材料项目</p>
-                                <p>数量</p>
-                                <p>单位</p>
-                                <p>单价</p>
-                                <p>金额</p>
-                            </li>
-                        </ul>
-                        <ul class="bottomContent ulcss">
-                            <li v-for="(item, index) in materialProject">
-                                <p class="ulcssIndex"> 
-                                    {{index+1}}
-                                    <i class="el-icon-error" @click="delLi(index)"></i>
-                                </p>
-                                <p>
-                                    <el-input v-model="item.materialList"></el-input>
-                                </p>
-                                <p>
-                                    <el-input v-model="item.inputCount"></el-input>
-                                </p>
-                                <p>
-                                    <el-input v-model="item.unt"></el-input>
-                                </p>
-                                <p>
-                                    <el-input v-model="item.inputNum"></el-input>
-                                </p>
-                                <p>{{item.money}}</p>
-                            </li>
-                        </ul>
-                        <div class="middleFoot">
-                            <span style="padding-right: 300px;">材料费小计： {{materialFees}}</span>
-                        </div>
-                    </div>
-                </el-row>
-                <el-row>
-                    <div class="total">
-                        <p>合计金额：{{allMoneyChina}}</p>
-                        <p>总计：{{allMoney}}</p>
-                        <p>
-                            <span>入帐方式：</span>
-                            <el-select v-model="values" placeholder="请选择">
-                                <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </p>
-                        <p>
-                            <el-button type="primary" @click="settlement">结算</el-button>
-                        </p>
-                        
-                    </div>
-                </el-row>
-                <el-row>
-                    <div class="info" style="margin-bottom: 40px;">
-                        <el-col :span="12" class="userName">
-                            <p>客户验收及签署：</p>
-                            <!-- 暂时不开发此功能 -->
-                            <!-- <el-input></el-input> -->
-                        </el-col>
-                        <el-col :span="12">
-                            <ul class="ulcss">
-                                <li>
-                                    <p>{{tableTitle}}</p>
-                                </li>
-                                <li>
-                                    <p>电话：</p>
-                                    <p><el-input v-model="telePhone"></el-input></p>
-<!--                                     <p>传真：</p>
-                                    <p><el-input v-model="inputFax"></el-input></p> -->
-                                    <p>地址：</p>
-                                    <p><el-input v-model="local"></el-input></p>
-                                </li>
-                            </ul>
-                        </el-col>
-                    </div>
-                </el-row>
+    <div class="drawTale">
+        <el-row :gutter="24" style="margin: 0;">
+            <el-col :span="5" :offset="2">
+                <div class="title">
+                    <p>永光汽车修理部</p>
+                    <p>结算系统</p>
+                </div>    
             </el-col>
-            <el-col :span="3" :offset="1">
-                <el-button @click="mainDialog" style="margin: 150px 70px 50px 30px;">维修项目</el-button>
-                <el-button @click="materialDialog" style="margin: 50px 70px 50px 30px;">材料项目</el-button>
-                <el-button @click="saveIt" type="primary" style="margin: 50px 70px 20px 30px;">保存清单</el-button>
-                <p style="border-bottom: 1px solid #ccc; width: 90%;" v-show="fileShow" v-text="'文件名：'+fileName">
-                </p>
-            </el-col>
+            <el-col :span="8" :offset="8">
+                <div class="btnBox">
+                    <el-button @click="mainDialog" style="margin: 0 40px 0 0;">维修项目</el-button>
+                    <el-button @click="materialDialog" style="margin: 0 40px 0 0;">材料项目</el-button>
+                    <el-button @click="saveIt" type="primary" style="margin: 0 40px 0 0;">保存清单</el-button>
+                </div>
+            </el-col> 
         </el-row>
+        <el-col :span="20" :offset="2">
+            <el-row>
+                <p class="titleContent">
+                    <el-input placeholder="请输入公司名称" v-model="tableTitle"></el-input>
+                </p>
+                <h2>结算单</h2>
+                <div class="tableHead">
+                    <ul class="tableHeadUl ulcss">
+                        <li v-for="item in liName">
+                            <p>{{item.name}}</p>
+                            <p>
+                                <el-input v-model="item.inputs"></el-input>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </el-row>
+            <el-row>
+                <div class="tableMiddle">
+                    <ul class="middleHead ulcss">
+                        <li>
+                            <p>序号</p>
+                            <p>
+                                维修项目
+                                <i class="el-icon-circle-plus" @click="addMainProject"></i>
+                            </p>
+                            <p>修理费</p>
+                        </li>
+                        <li>
+                            <p>序号</p>
+                            <p>维修项目</p>
+                            <p>修理费</p>
+                        </li>
+                    </ul>
+                    <ul class="middleContent ulcss">
+                        <li v-for="(item, index) in mainProject">
+                            <p>
+                                {{index+1}}
+                                <i class="el-icon-error" @click="delLiM(index)"></i>
+                            </p>
+                            <p>
+                                <el-input v-model="item.mainList"></el-input>
+                            </p>
+                            <p>
+                                <el-input v-model="item.inputs"></el-input>
+                            </p>
+                        </li>
+                    </ul>
+                    <div class="middleFoot">
+                        <span style="padding-right: 300px;">维修费小计： {{maintenanceFees}}</span>
+                    </div>
+                </div>
+            </el-row>
+            <el-row>
+                <div class="tableBottom">
+                    <ul class="bottomHead ulcss">
+                        <li>
+                            <p>序号</p>
+                            <p>
+                                材料项目
+                                <i class="el-icon-circle-plus"
+                                @click="addMaterialProject"></i>
+                            </p>
+                            <p>数量</p>
+                            <p>单位</p>
+                            <p>单价</p>
+                            <p>金额</p>
+                        </li>
+                        <li>
+                            <p>序号</p>
+                            <p>材料项目</p>
+                            <p>数量</p>
+                            <p>单位</p>
+                            <p>单价</p>
+                            <p>金额</p>
+                        </li>
+                    </ul>
+                    <ul class="bottomContent ulcss">
+                        <li v-for="(item, index) in materialProject">
+                            <p class="ulcssIndex"> 
+                                {{index+1}}
+                                <i class="el-icon-error" @click="delLi(index)"></i>
+                            </p>
+                            <p>
+                                <el-input v-model="item.materialList"></el-input>
+                            </p>
+                            <p>
+                                <el-input v-model="item.inputCount"></el-input>
+                            </p>
+                            <p>
+                                <el-input v-model="item.unt"></el-input>
+                            </p>
+                            <p>
+                                <el-input v-model="item.inputNum"></el-input>
+                            </p>
+                            <p>{{item.money}}</p>
+                        </li>
+                    </ul>
+                    <div class="middleFoot">
+                        <span style="padding-right: 300px;">材料费小计： {{materialFees}}</span>
+                    </div>
+                </div>
+            </el-row>
+            <el-row>
+                <div class="total">
+                    <p>合计金额：{{allMoneyChina}}</p>
+                    <p>总计：{{allMoney}}</p>
+                    <p>
+                        <span>入帐方式：</span>
+                        <el-select v-model="values" placeholder="请选择">
+                            <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </p>
+                    <p>
+                        <el-button type="primary" @click="settlement">结算</el-button>
+                    </p>
+                    
+                </div>
+            </el-row>
+            <el-row>
+                <div class="info" style="margin-bottom: 40px;">
+                    <el-col :span="12" class="userName">
+                        <p>客户验收及签署：</p>
+                        <!-- 暂时不开发此功能 -->
+                        <!-- <el-input></el-input> -->
+                    </el-col>
+                    <el-col :span="12">
+                        <ul class="ulcss">
+                            <li>
+                                <p>{{tableTitle}}</p>
+                            </li>
+                            <li>
+                                <p>电话：</p>
+                                <p><el-input v-model="telePhone"></el-input></p>
+                                <!-- <p>传真：</p> -->
+                                <!-- <p><el-input v-model="inputFax"></el-input></p> -->
+                                <p>地址：</p>
+                                <p><el-input v-model="local"></el-input></p>
+                            </li>
+                        </ul>
+                    </el-col>
+                </div>
+            </el-row>
+            <el-row>
+                <el-col :span="4" :offset="18">
+                    <p style="border-bottom: 1px solid #ccc; margin: 0 0 50px 0;" v-show="fileShow"
+                        v-text="'文件名：'+fileName">
+                    </p>    
+                </el-col>
+            </el-row>
+        </el-col>
         <sysdialog
             :title="dialogTitle"
             :dialogVisible="showDialog"
@@ -235,11 +255,11 @@
                 // 总计
                 allMoney: '-----',
                 // 电话
-                telePhone: '-----',
+                telePhone: '',
                 // 传真
-                fax: '-----',
+                fax: '',
                 // 地址
-                local: '-----',
+                local: '',
                 // 维修项目
                 mainProject: [
                     // { name: '拆装----', inputs: '' }
@@ -252,7 +272,7 @@
                     // { name: '轮胎----', inputCount: '', unt: '个', inputNum : '', money: '' }
                 ],
                 // 入账方式
-                values: '',
+                values: '1',
                 // 是否结算的状态
                 settlementStatus: false,
                 options: [
@@ -324,7 +344,17 @@
                     }
                 }).then(e => {
                     if (e.data.type === 'success') {
-                        this.$alert('文件保存成功')
+                        this.$message({
+                            message: `文件保存成功`,
+                            type: 'success',
+                            duration: 1000
+                        })
+                        setTimeout(() => {
+                            this.$router.push({
+                                name: 'Hello',
+                                path: '/hello'
+                            })
+                        }, 1000)
                     } else {
                         this.$alert('文件名冲突, 保存失败')
                     }
@@ -332,71 +362,71 @@
             },
             // 当前日期的字符串--用于文件名
             getDate () {
-                var year = new Date().getFullYear(); 
-                var month =(new Date().getMonth() + 1); 
-                var day = (new Date().getDate());
+                let year = new Date().getFullYear(); 
+                let month =(new Date().getMonth() + 1); 
+                let day = (new Date().getDate());
                 return `${year}${month}${day}`
             },
             // 保存清单
             saveIt () {
                 // 判断是否有未填项
-                // if (this.fileName === '') {
-                //     this.$alert('请填写文件名', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // }
-                // if (this.settlementStatus === false) {
-                //     this.$alert('请结算清单', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // }
-                // if (this.tableTitle === '') {
-                //     this.$alert('请填写公司名称', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // } else if (this.inputPhone === '') {
-                //     this.$alert('请填写电话', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // } else if (this.inputAdress === '') {
-                //     this.$alert('请填写地址', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // } else if (this.value === '') {
-                //     this.$alert('请选择入帐方式', {
-                //         confirmButtonText: '确定'
-                //     })
-                //     return
-                // }
-                // this.liName.forEach(item => {
-                //     if (item.inputs === '') {
-                //         this.$alert('请填写具体信息', {
-                //             confirmButtonText: '确定'
-                //         })
-                //     }
-                //     return
-                // })
-                // this.mainProject.forEach(item => {
-                //     if (item.inputs === '') {
-                //         this.$alert('请填写维修费用', {
-                //             confirmButtonText: '确定'
-                //         })
-                //     }
-                //     return
-                // })
-                // this.materialProject.forEach(item => {
-                //     if (item.inputCount === '' || item.inputNum === '') {
-                //         this.$alert('请填写数量或单价', {
-                //             confirmButtonText: '确定'
-                //         })
-                //     }
-                //     return
-                // })
+                let tag1 = 0, tag2 = 0, tag3 = 0;
+                this.liName.forEach(item => {
+                    if (item.inputs === '') {
+                        tag1 = 1;
+                    }
+                })
+                if (tag1 !== 0) {
+                    this.$alert('请填写具体信息', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }
+                if (this.tableTitle === '') {
+                    this.$alert('请填写公司名称', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                } else if (this.telePhone === '') {
+                    this.$alert('请填写电话', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                } else if (this.local === '') {
+                    this.$alert('请填写地址', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }
+                this.mainProject.forEach(item => {
+                    if (item.inputs === '') {
+                        tag2 = 1;
+                    }
+                    return
+                })
+                if (tag2 !== 0) {
+                    this.$alert('请填写维修费用', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }
+                this.materialProject.forEach(item => {
+                    if (item.inputCount === '' || item.inputNum === '') {
+                        tag3 = 1;
+                    }
+                })
+                if (tag3 !== 0) {
+                    this.$alert('请填写数量或单价', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }
+                if (this.settlementStatus === false) {
+                    this.$alert('请结算清单', {
+                        confirmButtonText: '确定'
+                    })
+                    return
+                }
                 // 生成并保存文件名
                 let carOwner, carModel;
                 this.liName.forEach(item => {
@@ -481,6 +511,13 @@
             },
             delLiM (indexs) {
                 this.mainProject.splice(indexs, 1)
+            },
+            // 手动添加某条项目
+            addMainProject () {
+                this.mainProject.push({ name: '', inputs: '' })
+            },
+            addMaterialProject () {
+                this.materialProject.push({ name: '', inputCount: '', unt: '', inputNum : '', money: ''})
             }
          },
         components: {
@@ -501,6 +538,27 @@
         width: 100%;
         height: 300px;
         overflow-y: scroll;
+    }
+    .drawTable .title {
+        width: 400px;
+        height: 120px;
+        margin-top: 20px;
+    }
+    .title p {
+        margin: 0 0 0 20px;
+        font-size: 30px;
+        width: 250px;
+        text-align: right;
+        line-height: 58px;
+        color: #D6D1D1;
+    }
+    .title p:last-child {
+        font-size: 25px;
+    }
+    .btnBox {
+        width: auto;
+        height: 40px;
+        margin-top: 45px;
     }
     h2 {
         text-align: center;
@@ -548,7 +606,8 @@
         line-height: 30px;
         border-right: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
-        color: #399CFC;
+        /*color: #399CFC;*/
+        color: #fff;
     }
     .tableHeadUl li {
         float: left;
