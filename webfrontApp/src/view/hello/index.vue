@@ -28,6 +28,12 @@
                             @click="printCount(index)"
                             v-if="showList">
                             {{item.fileName}}
+                            <p>
+                                <a @click.stop="exportExcel(index)">导出</a>
+                            </p>
+                            <p>
+                                <span @click.stop="delateExcel(index)">删除</span>
+                            </p>
                         </li>
                     </ul>    
                 </div>
@@ -59,6 +65,7 @@
             }
         },
         methods: {
+            // 新建文件
             newCount () {
                 this.$router.push({name: 'drawTable', path: '/drawTable'})
             },
@@ -99,6 +106,38 @@
                             type: 'warning',
                             duration: 1000
                         })
+                    }
+                })
+            },
+            // 导出某文件
+            exportExcel (index) {
+                let ids = this.listName[index].id;
+                location.href = `${this.$globalUrl}/api/exportExcel/${ids}`
+            },
+            // 删除某文件
+            delateExcel (index) {
+                let ids = this.listName[index].id;
+                this.$ajax({
+                    method: 'GET',
+                    url: `${this.$globalUrl}/api/deleteNum`,
+                    params: {
+                        ids
+                    }
+                }).then((e) => {
+                    if (e.data.type === 'success') {
+                        this.$message({
+                            message: '删除成功',
+                            showClose: true,
+                            type: 'success',
+                            duration: 1000
+                        })
+                    }
+                    if (this.showSearch) {
+                        // 根据搜索条件加载文件
+                        this.searchIt();    
+                    } else {
+                        // 加载所有文件
+                        this.showCount();
                     }
                 })
             },
@@ -190,5 +229,17 @@
     ul li:hover {
         color: #66B1FF;
         border-bottom: 1px solid #66B1FF;
+    }
+    ul li p {
+        width: 50px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        background: #66B1FF;
+        color: #fff;
+        float: right;
+        margin: 5px 5px;
+        font-size: 14px;
+        border-radius: 5px;
     }
 </style>

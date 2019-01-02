@@ -64,7 +64,7 @@ def deleteNum(request):
     if request.method == 'GET':
         req = request.GET.get('ids')
         Introduce.objects.filter(id = req).delete()
-    return HttpResponse('newDict')
+        return HttpResponse(json.dumps({'type': 'success'}), content_type="application/json")
 
 
 # 依据所传ids查询单一文件

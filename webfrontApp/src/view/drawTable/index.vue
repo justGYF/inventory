@@ -276,11 +276,8 @@
                 // 是否结算的状态
                 settlementStatus: false,
                 options: [
-                    { value: '1', label: '未付款' },
-                    { value: '2', label: '信用卡' },
-                    { value: '3', label: '支付宝' },
-                    { value: '4', label: '微信' },
-                    { value: '5', label: '现金' }
+                    { value: '1', label: '未入账' },
+                    { value: '2', label: '已入账' }
                 ],
             }
         },
