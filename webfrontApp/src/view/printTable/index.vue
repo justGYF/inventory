@@ -127,6 +127,7 @@
                                 <p>
                                     <el-input v-model="item.inputNum"></el-input>
                                 </p>
+                                <p>{{item.money}}</p>
                             </li>
                         </ul>
                         <div class="middleFoot">
