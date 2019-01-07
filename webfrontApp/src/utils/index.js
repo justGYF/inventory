@@ -116,9 +116,9 @@ export const convertCurrency = (currencyDigits) => {
     if (outputCharacters == "") { 
         outputCharacters = CN_ZERO + CN_DOLLAR; 
     } 
-    // if (decimal == "") {
-    //     outputCharacters += CN_INTEGER;
-    // } 
+    if (decimal == "") {
+        outputCharacters += CN_INTEGER;
+    } 
     // outputCharacters = CN_SYMBOL + outputCharacters; 
     return outputCharacters; 
 }

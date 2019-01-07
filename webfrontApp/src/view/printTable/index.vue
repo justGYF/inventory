@@ -41,7 +41,10 @@
                             <li v-for="item in liName">
                                 <p>{{item.name}}</p>
                                 <p>
-                                    <el-input v-model="item.inputs" :disabled="read"></el-input>
+                                    <el-input v-model="item.inputs" :disabled="read"
+                                        @focus="focusB"
+                                        @blur="blurB">
+                                    </el-input>
                                 </p>
                             </li>
                         </ul>
@@ -72,10 +75,12 @@
                                     v-show="!read"></i>
                                 </p>
                                 <p>
-                                    <el-input v-model="item.mainList"></el-input>
+                                    <el-input v-model="item.mainList" @focus="focusB"
+                                        @blur="blurB"></el-input>
                                 </p>
                                 <p>
-                                    <el-input v-model="item.inputs"></el-input>
+                                    <el-input v-model="item.inputs" @focus="focusB"
+                                        @blur="blurB"></el-input>
                                 </p>
                             </li>
                         </ul>
@@ -116,16 +121,20 @@
                                     v-show="!read"></i>
                                 </p>
                                 <p>
-                                    <el-input v-model="item.materialList"></el-input>
+                                    <el-input v-model="item.materialList" @focus="focusB"
+                                        @blur="blurB"></el-input>
                                 </p>
                                 <p>
-                                    <el-input v-model="item.inputCount"></el-input>
+                                    <el-input v-model="item.inputCount" @focus="focusB"
+                                        @blur="blurB"></el-input>
                                 </p>
                                 <p>
-                                    <el-input v-model="item.unt"></el-input>
+                                    <el-input v-model="item.unt" @focus="focusB"
+                                        @blur="blurB"></el-input>
                                 </p>
                                 <p>
-                                    <el-input v-model="item.inputNum"></el-input>
+                                    <el-input v-model="item.inputNum" @focus="focusB"
+                                        @blur="blurB"></el-input>
                                 </p>
                                 <p>{{item.money}}</p>
                             </li>
@@ -241,19 +250,20 @@
                     { name: '进厂日期', key: 'incomingDate', inputs: '' },
                     { name: '出厂日期', key: 'outDate', inputs: '' },
                     { name: '结算日期', key: 'settlementDate', inputs: '' },
-                    { name: '业务员', key: 'worker', inputs: '' },
+                    // { name: '业务员', key: 'worker', inputs: '' },
                     { name: '车牌', key: 'licensePlate', inputs: '' },
                     { name: '车型', key: 'carModel', inputs: '' },
                     { name: '修理类别', key: 'fixType', inputs: '' },
-                    { name: '进厂里程', key: 'incomingMileage', inputs: '' },
+                    // { name: '进厂里程', key: 'incomingMileage', inputs: '' },
                     { name: '车主', key: 'carOwner', inputs: '' },
                     { name: '联系人', key: 'carContact', inputs: '' },
-                    { name: '固话', key: 'fixedLine', inputs: '' },
+                    // { name: '固话', key: 'fixedLine', inputs: '' },
                     { name: '手机', key: 'phoneNumber', inputs: '' },
                     { name: '车架号', key: 'carFrameCode', inputs: '' },
                     { name: '发动机号', key: 'engineCode', inputs: '' },
-                    { name: '自编号', key: 'selfEditedCode', inputs: '' },
-                    { name: '备注', key: 'remark', inputs: '' }
+                    // { name: '自编号', key: 'selfEditedCode', inputs: '' },
+                    { name: '备注', key: 'remark', inputs: '' },
+                    { name: '里程数', key: 'incomingMileage', inputs: '' }
                 ],
                 // 弹框中的多选框
                 isIndeterminate: true,
@@ -322,6 +332,13 @@
             this.showData()
         },
         methods: {
+            // 输入框的背景色配置
+            focusB (e) {
+                e.target.style.background = '#fff'
+            },
+            blurB (e) {
+                e.target.style.background = 'none'
+            },
             // 获取后台返回的要展示的数据
             showData () {
                 this.$ajax({
@@ -362,20 +379,42 @@
                         console.log(e)
                     })
             },
+            // 小数点后两位, return 'str'
+            pointTwo (num) {
+                num = Math.round(num*100) / 100;
+                num = num.toFixed(2)
+                return num
+            },
             // 结算
             settlement () {
                 this.maintenanceFees = 0;
                 this.materialFees = 0;
                 this.mainProject.forEach(item => {
                     this.maintenanceFees+=(+item.inputs);
+
+                    // 要保证小数点后两位，包括00 - 使用完参数，再变形
+                    item.inputs = this.pointTwo(item.inputs)
+                    return item
                 })
                 this.materialProject.forEach(item => {
                     item.money = +item.inputCount * (+item.inputNum);
                     this.materialFees += (+item.money)
+
+                    // 要保证小数点后两位，包括00 - 使用完参数，再变形
+                    item.inputNum = this.pointTwo(item.inputNum)
+                    item.money = this.pointTwo(item.money)
                     return item;
                 })
+                
                 this.allMoney = this.maintenanceFees + this.materialFees;
                 this.allMoneyChina = convertCurrency(this.allMoney);
+
+                // 整体转化为 .00
+                this.materialFees = this.pointTwo(this.materialFees)
+                this.maintenanceFees = this.pointTwo(this.maintenanceFees)
+                this.allMoney = this.pointTwo(this.allMoney)
+
+
                 this.settlementStatus = true;
             },
             // 当前日期的字符串--用于文件名
@@ -429,7 +468,7 @@
                 // 判断是否有未填项
                 let tag1 = 0, tag2 = 0, tag3 = 0;
                 this.liName.forEach(item => {
-                    if (item.inputs === '') {
+                    if (item.inputs === '' && item.key !== 'remark') {
                         tag1 = 1;
                     }
                 })
@@ -713,39 +752,39 @@
         width: 25%;
     }
     .tableHeadUl li:nth-child(2), .tableHeadUl li:nth-child(3), .tableHeadUl li:nth-child(4) {
-        width: 20%;
-    }
-    .tableHeadUl li:nth-child(5) {
-        width: 15%;
-    }
-    .tableHeadUl li:nth-child(6) {
         width: 25%;
     }
+    .tableHeadUl li:nth-child(5) {
+        width: 25%;
+    }
+    .tableHeadUl li:nth-child(6) {
+        width: 45%;
+    }
     .tableHeadUl li:nth-child(7) {
-        width: 40%;
+        width: 30%;
     }
     .tableHeadUl li:nth-child(8) {
-        width: 20%;
+        width: 50%;
     }
     .tableHeadUl li:nth-child(9) {
-        width: 15%;
+        width: 20%;
     }
     .tableHeadUl li:nth-child(10) {
-        width: 40%;
+        width: 30%;
     }
     .tableHeadUl li:nth-child(11) {
-        width: 15%;
+        width: 50%;
     }
     .tableHeadUl li:nth-child(12) {
-        width: 27%;
+        width: 50%;
     }
     .tableHeadUl li:nth-child(13) {
-        width: 18%;
+        width: 50%;
     }
     .tableHeadUl li:nth-child(14) {
-        width: 40%;
+        width: 50%;
     }
-    .tableHeadUl li:nth-child(15) {
+    /*.tableHeadUl li:nth-child(15) {
         width: 42%;
     }
     .tableHeadUl li:nth-child(16) {
@@ -753,7 +792,7 @@
     }
     .tableHeadUl li:nth-child(17) {
         width: 100%;
-    }
+    }*/
 
     .middleHead li, .middleContent li, .bottomHead li, .bottomContent li {
         float: left;

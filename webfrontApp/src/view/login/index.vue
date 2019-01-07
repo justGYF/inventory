@@ -66,6 +66,8 @@
                             duration: 1000
                         });
                     } else {
+                        // 存储登录状态 -- 路由
+                        sessionStorage.setItem('user', 'ok')
                         this.$router.push({path: '/hello', name: 'Hello'})
                     }
                 })
