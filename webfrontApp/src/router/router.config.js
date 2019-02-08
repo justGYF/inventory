@@ -1,18 +1,18 @@
 import Hello from '@/view/hello'
 import DrawTable from '@/view/drawTable'
 import PrintTable from '@/view/printTable'
-import Login from '@/view/login'
+// import Login from '@/view/login'
 
 const routerMenuConfig = [
     { 
         path: '/',
-        redirect: '/login'
+        redirect: '/hello'
     },
-    { 
-        path: '/login',
-        name: 'login',
-        component: Login
-    },
+    // { 
+    //     path: '/login',
+    //     name: 'login',
+    //     component: Login
+    // },
     {
         path: '/hello',
         name: 'Hello',

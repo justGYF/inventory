@@ -81,7 +81,7 @@ def searchNum(request):
 
 # 查询文件名列表(所有文件)
 def showFileList(request):
-    listFile = Introduce.objects.all().values('fileName', 'id')
+    listFile = Introduce.objects.all().values('fileName', 'id', 'payment', 'allMoney')
     listF = []
     for item in listFile:
         listF.append(item)
@@ -95,10 +95,12 @@ def showSomeFile(request):
         keyword = req['searchData']
         someFile = Introduce.objects.filter(fileName__icontains = keyword)
         listF = []
-        dicts = {'fileName': '', 'id': ''}
+        dicts = {'fileName': '', 'id': '', 'payment': '', 'allMoney': ''}
         for key in someFile:
             dicts['fileName'] = key.fileName
             dicts['id'] = key.id
+            dicts['payment'] = key.payment
+            dicts['allMoney'] = key.allMoney
             listF.append(dicts)
-            dicts = {'fileName': '', 'id': ''}
+            dicts = {'fileName': '', 'id': '', 'payment': '', 'allMoney': ''}
         return HttpResponse(json.dumps(listF), content_type="application/json")

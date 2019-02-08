@@ -328,6 +328,7 @@
             }
         },
         mounted () {
+
             this.getProjectNum()
             this.showData()
         },
@@ -414,18 +415,31 @@
                 this.maintenanceFees = this.pointTwo(this.maintenanceFees)
                 this.allMoney = this.pointTwo(this.allMoney)
 
-
-                this.settlementStatus = true;
+                this.$nextTick(() => {
+                    this.settlementStatus = true;
+                })
+                
             },
             // 当前日期的字符串--用于文件名
-            getDate () {
-                let year = new Date().getFullYear(); 
-                let month =(new Date().getMonth() + 1); 
-                let day = (new Date().getDate());
-                return `${year}${month}${day}`
-            },
+            // 文件名中的日期不可更改，所以不同于新建文件的处理方式
+            // getDate () {
+            //     let year = new Date().getFullYear(); 
+            //     let month =(new Date().getMonth() + 1); 
+            //     let day = (new Date().getDate());
+            //     month = month < 10 ? '0' + month : month
+            //     day = day < 10 ? '0' + day : day
+            //     return `${year}${month}${day}`
+            // },
             // axios for information
             informationSave () {
+                this.mainProject.forEach(item => {
+                    item.label = item.mainList
+                    return item;
+                })
+
+                this.materialProject.forEach(item => {
+                    item.label = `${item.materialList} - ${item.unt}`
+                })
                 // 保存清单明细数据
                 this.$ajax({
                     method: 'post',
@@ -467,17 +481,17 @@
             saveIt () {
                 // 判断是否有未填项
                 let tag1 = 0, tag2 = 0, tag3 = 0;
-                this.liName.forEach(item => {
-                    if (item.inputs === '' && item.key !== 'remark') {
-                        tag1 = 1;
-                    }
-                })
-                if (tag1 !== 0) {
-                    this.$alert('请填写具体信息', {
-                        confirmButtonText: '确定'
-                    })
-                    return
-                }
+                // this.liName.forEach(item => {
+                //     if (item.inputs === '' && item.key !== 'remark') {
+                //         tag1 = 1;
+                //     }
+                // })
+                // if (tag1 !== 0) {
+                //     this.$alert('请填写具体信息', {
+                //         confirmButtonText: '确定'
+                //     })
+                //     return
+                // }
                 if (this.tableTitle === '') {
                     this.$alert('请填写公司名称', {
                         confirmButtonText: '确定'
@@ -532,7 +546,11 @@
                     if (item.key === 'carModel')
                         carModel = item.inputs
                 })
-                this.fileName = `${carModel}-${carOwner}-${this.getDate()}`
+                // 截取建立文件的时间，修改文件不修改时间
+                let n = this.fileName.lastIndexOf('-');
+                let date = this.fileName.slice(n + 1)
+                
+                this.fileName = `${carModel}-${carOwner}-${date}`
                 this.informationSave()
             },
             // 获取多选框数据

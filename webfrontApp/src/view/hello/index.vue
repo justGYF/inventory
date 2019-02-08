@@ -34,8 +34,12 @@
                             <p>
                                 <span @click.stop="delateExcel(index)">删除</span>
                             </p>
+                            <div v-text="payType(item.payment, item.allMoney)"></div>
                         </li>
                     </ul>    
+                </div>
+                <div class="leftBottom">
+                    已入账：{{payedMoney}} &nbsp;&nbsp;未入账：{{nopayMoney}} &nbsp;&nbsp; 共 {{listLength}} 条
                 </div>
             </el-col>
         </el-row>
@@ -50,7 +54,12 @@
                 listName: [
                 ],
                 searchData: '',
-                showSearch:false
+                showSearch:false,
+                // 总共条数，入账总数，未入账总数
+                listLength: '',
+                payedMoney: 0,
+                nopayMoney: 0,
+                payTitle: ''
             }
         },
         mounted () {
@@ -62,12 +71,42 @@
             },
             sStyle () {
                 return ['butsP', this.showSearch ? 'butChange' : '']
-            }
+            },
+            // 闭包 -- 计算属性传参
+            payType () {
+                return function (a, b) {
+                    if (a === '2') {
+                        return `已入账：${b}`
+                    } else {
+                        return `未入账：${b}`
+                    }
+                }
+             }
         },
         methods: {
             // 新建文件
             newCount () {
                 this.$router.push({name: 'drawTable', path: '/drawTable'})
+            },
+            // 精确到小数点后两位
+            pointTwo (num) {
+                num = Math.round(num*100) / 100;
+                num = num.toFixed(2)
+                return num
+            },
+            // 计算所有的money总数
+            getMoney (list) {
+                this.payedMoney = 0;
+                this.nopayMoney = 0;
+                list.forEach(item => {
+                    if (item.payment === '2') {
+                        this.payedMoney += Number(item.allMoney)
+                    } else {
+                        this.nopayMoney += Number(item.allMoney)
+                    }
+                })
+                this.payedMoney = this.pointTwo(this.payedMoney)
+                this.nopayMoney = this.pointTwo(this.nopayMoney)
             },
             // 加载所有文件列表
             showCount () {
@@ -79,6 +118,9 @@
                     this.showList = true
                     this.listName = []
                     this.listName = e.data
+
+                    this.getMoney(this.listName)
+                    this.listLength = this.listName.length
                 })
             },
             // 显示搜索框
@@ -86,6 +128,10 @@
                 this.showSearch = true;
                 this.showList = false;
                 this.listName = [];
+                this.listLength = 0;
+                this.payedMoney = 0;
+                this.nopayMoney = 0;
+                this.searchData = '';
             },
             // 搜索部分文件
             searchIt () {
@@ -106,7 +152,12 @@
                             type: 'warning',
                             duration: 1000
                         })
+                        this.payedMoney = '0.00'
+                        this.nopayMoney = '0.00'
+                    } else {
+                        this.getMoney(this.listName)
                     }
+                    this.listLength = this.listName.length
                 })
             },
             // 导出某文件
@@ -199,6 +250,14 @@
         height: auto;
         margin: 0 auto;
     }
+    .leftBottom {
+        width: 700px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 14px;
+        color: #ccc;
+        text-align: right;
+    }
     .search {
         width: 700px;
         height: 40px;
@@ -235,6 +294,19 @@
         height: 20px;
         line-height: 20px;
         text-align: center;
+        background: #66B1FF;
+        color: #fff;
+        float: right;
+        margin: 5px 5px;
+        font-size: 14px;
+        border-radius: 5px;
+    }
+    ul li div {
+        width: 200px;
+        height: 20px;
+        line-height: 20px;
+        text-align: left;
+        text-indent: 10px;
         background: #66B1FF;
         color: #fff;
         float: right;

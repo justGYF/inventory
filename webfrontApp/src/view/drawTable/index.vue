@@ -219,7 +219,7 @@
                 // 弹窗相关
                 dialogTitle: '',
                 showDialog: false,
-                tableTitle: '西安****服务有限公司',
+                tableTitle: '户县永光汽车修理部',
                 // inputPhone: '1888299629',
                 // inputFax: '0021-2526',
                 // inputAdress: '西安*****',
@@ -332,7 +332,7 @@
                     item.inputs = this.pointTwo(item.inputs)
                     return item
                 })
-                this.maintenanceFees = new Number(this.maintenanceFees).toFixed(2)
+
                 this.materialProject.forEach(item => {
                     item.money = +item.inputCount * (+item.inputNum);
                     this.materialFees += (+item.money)
@@ -351,10 +351,20 @@
                 this.allMoney = this.pointTwo(this.allMoney)
 
 
-                this.settlementStatus = true;
+                this.$nextTick(() => {
+                    this.settlementStatus = true;
+                })
             },
             // axios for information
             informationSave () {
+                this.mainProject.forEach(item => {
+                    item.label = item.mainList
+                    return item;
+                })
+
+                this.materialProject.forEach(item => {
+                    item.label = `${item.materialList} - ${item.unt}`
+                })
                 // 保存清单明细数据
                 this.$ajax({
                     method: 'post',
@@ -394,25 +404,33 @@
             // 当前日期的字符串--用于文件名
             getDate () {
                 let year = new Date().getFullYear(); 
-                let month =(new Date().getMonth() + 1); 
+                let month = (new Date().getMonth() + 1); 
                 let day = (new Date().getDate());
-                return `${year}${month}${day}`
+                let hour = new Date().getHours();
+                let minute = new Date().getMinutes();
+                let second = new Date().getSeconds();
+                month = month < 10 ? '0' + month : month
+                day = day < 10 ? '0' + day : day
+                hour = hour < 10 ? '0' + hour : hour
+                minute = minute < 10 ? '0' + minute : minute
+                second = second < 10 ? '0' + second : second
+                return `${year}${month}${day}/${hour}:${minute}:${second}`
             },
             // 保存清单
             saveIt () {
                 // 判断是否有未填项
                 let tag1 = 0, tag2 = 0, tag3 = 0;
-                this.liName.forEach(item => {
-                    if (item.inputs === '' && item.key !== 'remark') {
-                        tag1 = 1;
-                    }
-                })
-                if (tag1 !== 0) {
-                    this.$alert('请填写具体信息', {
-                        confirmButtonText: '确定'
-                    })
-                    return
-                }
+                // this.liName.forEach(item => {
+                //     if (item.inputs === '' && item.key !== 'remark') {
+                //         tag1 = 1;
+                //     }
+                // })
+                // if (tag1 !== 0) {
+                //     this.$alert('请填写具体信息', {
+                //         confirmButtonText: '确定'
+                //     })
+                //     return
+                // }
                 if (this.tableTitle === '') {
                     this.$alert('请填写公司名称', {
                         confirmButtonText: '确定'
@@ -545,10 +563,10 @@
             },
             // 手动添加某条项目
             addMainProject () {
-                this.mainProject.push({ name: '', inputs: '' })
+                this.mainProject.push({ name: '', inputs: '', label: '' })
             },
             addMaterialProject () {
-                this.materialProject.push({ name: '', inputCount: '', unt: '', inputNum : '', money: ''})
+                this.materialProject.push({ name: '', inputCount: '', unt: '', inputNum : '', money: '', label: ''})
             }
          },
         components: {

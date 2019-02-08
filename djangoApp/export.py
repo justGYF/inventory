@@ -201,6 +201,7 @@ def exportExcel(request, ids):
     second = 5
     third = 1
     for key in newMain:
+        print(key)
         sheet.write(9 + row, first, i + 1, style_bodyC)
         sheet.write_merge(9 + row, 9 + row, third, third + 3, key['label'], style_bodyC)
         sheet.write(9 + row, second, key['inputs'], style_bodyC)
