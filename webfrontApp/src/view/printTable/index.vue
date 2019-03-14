@@ -240,7 +240,7 @@
                 // 弹窗相关
                 dialogTitle: '',
                 showDialog: false,
-                tableTitle: '西安****服务有限公司',
+                tableTitle: '户县永光汽车修理部',
                 // inputPhone: '1888299629',
                 // inputFax: '0021-2526',
                 // inputAdress: '西安*****',
@@ -284,11 +284,11 @@
                 // 总计
                 allMoney: '-----',
                 // 电话
-                telePhone: '',
+                telePhone: '18392192996',
                 // 传真
                 fax: '',
                 // 地址
-                local: '',
+                local: '户县北环路七九新区',
                 // 维修项目
                 mainProject: [
                     // { name: '拆装----', inputs: '' }

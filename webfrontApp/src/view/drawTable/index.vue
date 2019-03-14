@@ -263,11 +263,11 @@
                 // 总计
                 allMoney: '-----',
                 // 电话
-                telePhone: '',
+                telePhone: '18392192996',
                 // 传真
                 fax: '',
                 // 地址
-                local: '',
+                local: '户县北环路七九新区',
                 // 维修项目
                 mainProject: [
                     // { name: '拆装----', inputs: '' }

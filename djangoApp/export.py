@@ -54,11 +54,6 @@ def exportExcel(request, ids):
     pattern:
         pattern solid,
         fore-colour white;
-    borders:
-        right THIN,
-        bottom THIN,
-        right_colour gray25,
-        bottom_colour gray25;
     """)
     # 空一行
     style_quote = xlwt.easyxf("""
@@ -66,15 +61,14 @@ def exportExcel(request, ids):
         name 宋体,
         bold off,
         height 200;
+    """)
+    style_quoteL = xlwt.easyxf("""
+    font:
+        name 宋体,
+        bold off,
+        height 200;
     borders:
-        right THIN,
-        bottom THIN,
-        top THIN,
-        left THIN,
-        top_colour gray25,
-        left_colour gray25,
-        right_colour gray25,
-        bottom_colour gray25;
+        left THIN;
     """)
     style_quoteC = xlwt.easyxf("""
     font:
@@ -135,6 +129,10 @@ def exportExcel(request, ids):
     style_bodyR = xlwt.easyxf("""
     borders:
         right THIN;
+    """)
+    style_bodyL = xlwt.easyxf("""
+    borders:
+        left THIN;
     """)
 
  
@@ -252,32 +250,33 @@ def exportExcel(request, ids):
             rows += 1
 
     # 第 14 + n + x 行 --- 材料费小计
-    sheet.write_merge(12 + allLength, 12 + allLength, 0, 11, '材料费小计: ' + newDict[0].materialFees, style_body)
+    sheet.write_merge(11 + allLength, 11 + allLength, 0, 11, '材料费小计: ' + newDict[0].materialFees, style_body)
 
     # 剩余信息
-    sheet.write_merge(13 + allLength, 13 + allLength, 0, 5, '合计金额: ' + newDict[0].allMoneyChina, style_quote)
-    sheet.write(13 + allLength, 8, '总计:', style_quote)
-    sheet.write_merge(13 + allLength, 13 + allLength, 9, 10, newDict[0].allMoney, style_quoteC)
+    sheet.write_merge(12 + allLength, 12 + allLength, 0, 5, '合计金额: ' + newDict[0].allMoneyChina, style_quoteL)
+    sheet.write(12 + allLength, 8, '总计:', style_quote)
+    sheet.write_merge(12 + allLength, 12 + allLength, 9, 10, newDict[0].allMoney, style_quote)
 
     if newDict[0].payment == '1':
         payment = '未入账'
     else:
         payment = '已入账'
-    sheet.write_merge(14 + allLength, 14 + allLength, 0, 5, '入账方式: '+ payment, style_quote)
+    sheet.write_merge(13 + allLength, 13 + allLength, 0, 5, '入账方式: '+ payment, style_quoteL)
 
     # 底部的特殊样式
+    sheet.write(12 + allLength, 11, '', style_bodyR)
     sheet.write(13 + allLength, 11, '', style_bodyR)
-    sheet.write(14 + allLength, 11, '', style_bodyR)
-    # 中间空一行
-    sheet.write_merge(15 + allLength, 15 + allLength, 0, 11, '', style_bodyB)
 
-    sheet.write_merge(16 + allLength, 16 + allLength, 1, 2, '客户验收及签署: ', style_quote)
-    sheet.write_merge(16 + allLength, 16 + allLength, 9, 11, newDict[0].tableTitle, style_quote)
 
-    sheet.write(17 + allLength, 8, '电话: ', style_quote)
-    sheet.write_merge(17 + allLength, 17 + allLength, 9, 11, newDict[0].telePhone, style_quote)
-    sheet.write(18 + allLength, 8, '地址: ', style_quote)
-    sheet.write_merge(18 + allLength, 18 + allLength, 9, 11, newDict[0].local, style_quote)
+    sheet.write_merge(14 + allLength, 14 + allLength, 0, 11, '', style_bodyB)
+
+    sheet.write_merge(15 + allLength, 15 + allLength, 1, 2, '客户验收及签署: ', style_quote)
+    sheet.write_merge(15 + allLength, 15 + allLength, 9, 11, newDict[0].tableTitle, style_quote)
+
+    sheet.write(16 + allLength, 8, '电话: ', style_quote)
+    sheet.write_merge(16 + allLength, 16 + allLength, 9, 11, newDict[0].telePhone, style_quote)
+    sheet.write(17 + allLength, 8, '地址: ', style_quote)
+    sheet.write_merge(17 + allLength, 17 + allLength, 9, 11, newDict[0].local, style_quote)
 
     
 

@@ -27,12 +27,12 @@
                         <li v-for="(item, index) in listName"
                             @click="printCount(index)"
                             v-if="showList">
-                            {{item.fileName}}
+                            <span :title= item.fileName>{{item.fileName}}</span>
                             <p>
                                 <a @click.stop="exportExcel(index)">导出</a>
                             </p>
                             <p>
-                                <span @click.stop="delateExcel(index)">删除</span>
+                                <a @click.stop="delateExcel(index)">删除</a>
                             </p>
                             <div v-text="payType(item.payment, item.allMoney)"></div>
                         </li>
@@ -99,7 +99,7 @@
                 this.payedMoney = 0;
                 this.nopayMoney = 0;
                 list.forEach(item => {
-                    if (item.payment === '2') {
+                    if (item.payment - 0 === 2) {
                         this.payedMoney += Number(item.allMoney)
                     } else {
                         this.nopayMoney += Number(item.allMoney)
@@ -313,5 +313,13 @@
         margin: 5px 5px;
         font-size: 14px;
         border-radius: 5px;
+    }
+    li span {
+        display: block;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        width: 300px;
+        float: left;
     }
 </style>
