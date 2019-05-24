@@ -50,14 +50,11 @@
                     });
                     return;
                 }
-                this.$ajax({
-                    method: 'post',
-                    url: `${this.$globalUrl}/api/login`,
-                    data: {
-                        userName: this.formLabelAlign.userName,
-                        passWord: this.formLabelAlign.passWord,
-                    }
-                }).then(e => {
+                this.$ajax.post(`api/login`, {
+                    userName: this.formLabelAlign.userName,
+                    passWord: this.formLabelAlign.passWord
+                })
+                .then(e => {
                     if (e.data.type === 'error') {
                         this.$message({
                             showClose: true,

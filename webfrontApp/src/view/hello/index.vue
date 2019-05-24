@@ -34,7 +34,10 @@
                             <p>
                                 <a @click.stop="delateExcel(index)">删除</a>
                             </p>
-                            <div v-text="payType(item.payment, item.allMoney)"></div>
+                            <div 
+                                v-text="payType(item.payment, item.allMoney)"
+                                @click.right="change($event, index)">
+                            </div>
                         </li>
                     </ul>    
                 </div>
@@ -43,10 +46,21 @@
                 </div>
             </el-col>
         </el-row>
+        <RightMenu 
+            red="rightMenu"
+            :top = "contextTop"
+            :left = "contextLeft"
+            :list = "contextList"
+            :width = "contextWidth"
+            :height = "contextHeight"
+            @giveValue = "getIndex"
+            v-show="showRight">
+        </RightMenu>
     </div>
 </template>
 
 <script>
+    import RightMenu from '@/components/rightMenu'
     export default {
         data () {
             return {
@@ -59,11 +73,42 @@
                 listLength: '',
                 payedMoney: 0,
                 nopayMoney: 0,
-                payTitle: ''
+                payTitle: '',
+
+                // 右键弹窗相关
+                showRight: false,
+                contextWidth: 150,
+                contextHeight: 60,
+                contextTop: 0,
+                contextLeft: 0,
+                contextList: [
+                    { value: '更改为：已入账', type: '2' },
+                    { value: '更改为：未入账', type: '1' }
+                ],
+                contextIndex: 0,
+                // window可视区域的宽高
+                windowWidth: document.documentElement.clientWidth,
+                windowHeight: document.documentElement.clientHeight
             }
         },
         mounted () {
             this.showCount();
+            // 窗口改变，重置宽高值 --- this的指向很重要
+            // 三个window监听都是为了右键弹框，很有问题！！！
+            window.onresize = () => {
+                this.windowWidth = document.documentElement.clientWidth;
+                this.windowHeight = document.documentElement.clientHeight;
+            }
+            window.onscroll = () => {
+                if(this.showRight) {
+                    this.showRight = false
+                }
+            }
+            window.addEventListener('click', (e) => {
+                if (e.target !== this.$refs.rightMenu && this.showRight)  {
+                    this.showRight = false
+                }
+            })
         },
         computed: {
             pStyle () {
@@ -84,6 +129,62 @@
              }
         },
         methods: {
+            getIndex (val) {
+                this.$ajax.post(`api/changePayType`, {
+                    ids: this.contextIndex,
+                    payment: val
+                })
+                    .then(e => {
+                        if (e.data.type === 'success') {
+                            this.$message({
+                                showClose: true,
+                                message: `更改成功`,
+                                type: 'success',
+                                duration: 1000
+                            })
+                            this.showRight = false;
+                            if (this.showSearch) {
+                                // 根据搜索条件加载文件
+                                this.searchIt();
+                            } else {
+                                // 加载所有文件
+                                this.showCount();
+                            }
+                        }
+                    })
+            },
+            change ($event, index) {
+                // 保存右键弹框的id
+                this.contextIndex = this.listName[index].id;
+                // 阻止默认弹框的显示
+                $event.preventDefault()
+
+                /**
+                 * 定位弹框位置
+                 * X > 0 --- 右转左
+                 * Y > 0 --- 下转上
+                 * X > 0 && Y > 0  右下转左上
+                 */
+                let X = $event.clientX + this.contextWidth - this.windowWidth;
+                let Y = $event.clientY + this.contextHeight - this.windowHeight;
+
+                if (X > 0 && Y <= 0) {
+                    this.contextLeft = $event.clientX - this.contextWidth;
+                    this.contextTop = $event.clientY;
+                } else if (X <= 0 && Y > 0) {
+                    this.contextTop = $event.clientY - this.contextHeight;
+                    this.contextLeft = $event.clientX;
+                } else if ( X > 0 && Y > 0) {
+                    this.contextLeft = $event.clientX - this.contextWidth;
+                    this.contextTop = $event.clientY - this.contextHeight;
+                } else {
+                    this.contextLeft = $event.clientX;
+                    this.contextTop = $event.clientY;
+                }
+                
+
+                this.showRight = true;
+            },
             // 新建文件
             newCount () {
                 this.$router.push({name: 'drawTable', path: '/drawTable'})
@@ -111,17 +212,15 @@
             // 加载所有文件列表
             showCount () {
                 this.showSearch = false;
-                this.$ajax({
-                    method: 'get',
-                    url: `${this.$globalUrl}/api/showFileList`
-                }).then(e => {
-                    this.showList = true
-                    this.listName = []
-                    this.listName = e.data
+                this.$ajax.get(`api/showFileList`)
+                    .then(e => {
+                        this.showList = true
+                        this.listName = []
+                        this.listName = e.data
 
-                    this.getMoney(this.listName)
-                    this.listLength = this.listName.length
-                })
+                        this.getMoney(this.listName)
+                        this.listLength = this.listName.length
+                    })
             },
             // 显示搜索框
             searchCount () {
@@ -135,13 +234,10 @@
             },
             // 搜索部分文件
             searchIt () {
-                this.$ajax({
-                    method: 'post',
-                    url: `${this.$globalUrl}/api/showSomeFile`,
-                    data: {
-                        searchData: this.searchData
-                    }
-                }).then(e => {
+                this.$ajax.post(`api/showSomeFile`, {
+                    searchData: this.searchData
+                })
+                .then(e => {
                     this.showList = true
                     this.listName = []
                     this.listName = e.data
@@ -168,13 +264,8 @@
             // 删除某文件
             delateExcel (index) {
                 let ids = this.listName[index].id;
-                this.$ajax({
-                    method: 'GET',
-                    url: `${this.$globalUrl}/api/deleteNum`,
-                    params: {
-                        ids
-                    }
-                }).then((e) => {
+                this.$ajax.get(`api/deleteNum?ids=` + ids)
+                .then((e) => {
                     if (e.data.type === 'success') {
                         this.$message({
                             message: '删除成功',
@@ -197,6 +288,9 @@
                 let ids = this.listName[val].id;
                 this.$router.push({name: 'printTable', path: '/printTable', params: {ids: ids}})
             }
+        },
+        components: {
+            RightMenu
         }
     }
 </script>
@@ -313,6 +407,9 @@
         margin: 5px 5px;
         font-size: 14px;
         border-radius: 5px;
+    }
+    ul li div:hover {
+        background: #2C2E5D;
     }
     li span {
         display: block;

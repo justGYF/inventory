@@ -104,3 +104,16 @@ def showSomeFile(request):
             listF.append(dicts)
             dicts = {'fileName': '', 'id': '', 'payment': '', 'allMoney': ''}
         return HttpResponse(json.dumps(listF), content_type="application/json")
+
+# 更改已入账，未入账的状态
+def changePayType(request):
+    if request.method == 'POST':
+        req = json.loads(request.body)
+        if 'ids' in req:
+            temp = Introduce.objects.get(id = req['ids'])
+            setattr(temp, 'payment', req['payment'])
+            temp.save()
+            return HttpResponse(json.dumps({'type': 'success'}), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps({'type': 'error'}), content_type="application/json")
+

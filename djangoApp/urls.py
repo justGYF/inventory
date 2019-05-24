@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^searchNum$', operatetable.searchNum),
     url(r'^showSomeFile$', operatetable.showSomeFile),
     url(r'^showFileList$', operatetable.showFileList),
+    url(r'^changePayType$', operatetable.changePayType),
     url(r'^exportExcel/(.+)/$', export.exportExcel),
     url(r'^projectlist$', projectlist.projectlist),
     url(r'^login$', login.login)

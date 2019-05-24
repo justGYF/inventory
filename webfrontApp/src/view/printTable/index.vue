@@ -342,13 +342,7 @@
             },
             // 获取后台返回的要展示的数据
             showData () {
-                this.$ajax({
-                    method: 'get',
-                    url: `${this.$globalUrl}/api/searchNum`,
-                    params: {
-                        ids: this.$route.params.ids
-                    }
-                })
+                this.$ajax.get(`api/searchNum?ids=`+ this.$route.params.ids)
                     .then(e => {
                         if (e.data.type === 'error') {
                             this.$message({
@@ -441,25 +435,22 @@
                     item.label = `${item.materialList} - ${item.unt}`
                 })
                 // 保存清单明细数据
-                this.$ajax({
-                    method: 'post',
-                    url: `${this.$globalUrl}/api/updateNum`,
-                    data: {
-                        ids: this.$route.params.ids,
-                        liName: this.liName,
-                        fileName: this.fileName,
-                        tableTitle: this.tableTitle,
-                        maintenanceFees: this.maintenanceFees,
-                        materialFees: this.materialFees,
-                        allMoneyChina: this.allMoneyChina,
-                        allMoney: this.allMoney,
-                        telePhone: this.telePhone,
-                        local: this.local,
-                        payment: this.values,
-                        mainProject: JSON.stringify(this.mainProject),
-                        materialProject: JSON.stringify(this.materialProject)
-                    }
-                }).then(e => {
+                this.$ajax.post(`api/updateNum`, {
+                    ids: this.$route.params.ids,
+                    liName: this.liName,
+                    fileName: this.fileName,
+                    tableTitle: this.tableTitle,
+                    maintenanceFees: this.maintenanceFees,
+                    materialFees: this.materialFees,
+                    allMoneyChina: this.allMoneyChina,
+                    allMoney: this.allMoney,
+                    telePhone: this.telePhone,
+                    local: this.local,
+                    payment: this.values,
+                    mainProject: JSON.stringify(this.mainProject),
+                    materialProject: JSON.stringify(this.materialProject)
+                })
+                .then(e => {
                     if (e.data.type === 'success') {
                         this.$message({
                             message: `文件保存成功`,
@@ -555,10 +546,8 @@
             },
             // 获取多选框数据
             getProjectNum () {
-                this.$ajax({
-                    method: 'get',
-                    url: `${this.$globalUrl}/api/projectlist`,
-                }).then(resp => {
+                this.$ajax.get(`api/projectlist`)
+                .then(resp => {
                     let data = resp.data;
                     data.mainProject.forEach(item => {
                         item.label = item.mainList;

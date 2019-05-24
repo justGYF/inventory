@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import { routerMenuConfig } from './router.config.js'
+import axios from 'axios'
+import store from '@/store'
+
 Vue.use(Router)
 
 const routes = routerMenuConfig.map(item => {
@@ -33,4 +36,14 @@ const router = new Router({
 //         next();
 //     }
 // })
+
+// router.beforeEach((to, from, next) => {
+//     console.log(store.state.cancel.source)
+//     const CancelToken = axios.CancelToken
+//     store.state.cancel.source.cancel && store.state.cancel.source.cancel()
+//     store.state.cancel.source = CancelToken.source()
+//     next()
+// })
+// 
+// WWW
 export default router
