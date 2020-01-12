@@ -56,8 +56,8 @@ ROOT_URLCONF = 'inventoryDjango.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': ["inventoryDjango/dist"],
-        'DIRS': [],
+        'DIRS': ["inventoryDjango/dist"],
+        # 'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,6 +130,6 @@ STATIC_URL = '/static/'
 
 
 # Add for vuejs
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, "inventoryDjango/dist/static"),
-# ]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "inventoryDjango/dist/static"),
+]
